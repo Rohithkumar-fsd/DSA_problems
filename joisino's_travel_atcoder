@@ -1,0 +1,85 @@
+import java.util.*;
+public class Main{
+  public static void main(String[]args)
+  {
+    Scanner scan=new Scanner(System.in);
+    int N=scan.nextInt();
+    int cost[][]=new int[N+1][N+1];
+    int M=scan.nextInt();
+    int R=scan.nextInt();
+    int towns[]=new int[R];
+    for(int i=0;i<R;i++)
+    {
+      towns[i]=scan.nextInt();
+    }
+    for(int i=1;i<=N;i++)
+    {
+      for(int j=1;j<=N;j++)
+      {
+        if(i==j)
+        {
+          continue;
+        }
+        cost[i][j]=Integer.MAX_VALUE;
+      }
+    }
+    for(int i=0;i<M;i++)
+    {
+      int src=scan.nextInt();
+      int dest=scan.nextInt();
+      int dis=scan.nextInt();
+      cost[src][dest]=dis;
+      cost[dest][src]=dis;
+    }
+    for(int via=1;via<=N;via++)
+    {
+      for(int i=1;i<=N;i++)
+      {
+        for(int j=1;j<=N;j++)
+        {
+            if(cost[i][via]==Integer.MAX_VALUE || cost[via][j]==Integer.MAX_VALUE)
+            {
+                continue;
+            }
+          cost[i][j]=Math.min(cost[i][j],cost[i][via]+cost[via][j]);
+        }
+      }
+    }
+    int res[]=new int[1];
+    res[0]=Integer.MAX_VALUE;
+    boolean []visited=new boolean[R];
+    generatePerm(new ArrayList<>(),R,res,cost,visited,towns);
+    System.out.println(res[0]);
+  }
+  static int minDis(int [][]cost,List<Integer>perm,int R)
+  {
+    int ans=0;
+      // System.out.println(perm);
+    for(int i=0;i<R-1;i++)
+    {
+      int t1=perm.get(i);
+      int t2=perm.get(i+1);
+      ans+=cost[t1][t2];
+    }
+    return ans;
+  }
+  static void generatePerm(List<Integer>perm,int R,int res[],int cost[][],boolean[]visited,int towns[])
+  {
+    if(perm.size()==R)
+    {
+       res[0]=Math.min(res[0],minDis(cost,perm,R));
+       return;
+    }
+    for(int i=0;i<R;i++)
+    {
+      if(!visited[i])
+      {
+        visited[i]=true;
+        perm.add(towns[i]);
+        generatePerm(perm,R,res,cost,visited,towns);
+        visited[i]=false;
+          perm.remove(perm.size()-1);
+      }
+    }
+  }
+}
