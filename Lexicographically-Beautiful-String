@@ -1,0 +1,79 @@
+import java.util.*;
+public class Main{
+  public static void main(String[]args)
+  {
+    Scanner scan=new Scanner(System.in);
+    String s=scan.nextLine();
+      boolean changed=false;
+      char ch[]=s.toCharArray();
+      if(ch[0]=='z')
+      {
+          System.out.println("-1");
+          return;
+      }
+      for(int i=1;i<s.length();i++)
+      {
+          if(ch[i]==ch[i-1])
+          {
+              if(ch[i]=='z')
+              {
+                  continue;
+              }
+              if(!changed)
+              {
+                  ch[i]=(char)(ch[i]+1);
+                  changed=true;
+              }
+              else{
+                  char lex=apply(ch[i-1],ch,i);
+                  ch[i]=lex;
+              }
+          }
+          else{
+              char lex=apply(ch[i-1],ch,i);
+              if(lex<ch[i])
+              {
+                  if(changed)
+                  {
+                      ch[i]=lex;
+                  }
+              }
+          }
+      }
+      if(!changed)
+      {
+          int index=ch.length-1;
+          while(index>=0)
+          {
+              if(ch[index]=='z')
+              {
+                  ch[index]='a';
+                  index--;
+             }
+              else{
+                  ch[index]=(char)(ch[index]+1);
+                  if(index-1>=0 && ch[index-1]==ch[index])
+                  {
+                      index--;
+                  }
+                  else{
+                      break;
+                  }
+              }
+          }
+      }
+      System.out.println(new String(ch));
+  }
+    static char apply(char prev,char ch[],int index)
+    {
+        for(int i=0;i<26;i++)
+        {
+            char c=(char)(i+'a');
+            if(c!=prev)
+            {
+                return c;
+            }
+        }
+        return 'a';
+    }
+}
