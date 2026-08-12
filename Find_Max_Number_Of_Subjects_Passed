@@ -1,0 +1,40 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        int answered[]=new int[N];
+        int needed[]=new int[N];
+        for(int i=0;i<N;i++)
+        {
+            answered[i]=scan.nextInt();
+        }
+        for(int i=0;i<N;i++)
+        {
+            needed[i]=scan.nextInt();
+        }
+        int Q=scan.nextInt();
+        int rem[]=new int[N];
+        for(int i=0;i<N;i++)
+        {
+            if(answered[i]>=needed[i])
+            {
+                continue;
+            }
+            rem[i]=needed[i]-answered[i];
+        }
+        Arrays.sort(rem);
+        int sum=0;
+        int ans=0;
+        for(int i=0;i<rem.length;i++)
+        {
+            sum+=rem[i];
+            if(sum>Q)
+            {
+                break;
+            }
+            ans++;
+        }
+        System.out.println(ans);
+    }
+}
