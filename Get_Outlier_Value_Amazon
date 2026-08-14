@@ -1,0 +1,46 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+       Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        long prefix[]=new long[N];
+        int arr[]=new int[N];
+        long suffix[]=new long[N];
+        for(int i=0;i<N;i++)
+        {
+            arr[i]=scan.nextInt();
+        }
+        long sum=0;
+        Arrays.sort(arr);
+        int max=arr[arr.length-1];
+        for(int i=0;i<arr.length;i++)
+        {
+            sum+=arr[i];
+            prefix[i]=sum;
+        }
+        sum=0;
+        for(int i=arr.length-1;i>=0;i--)
+        {
+            sum+=arr[i];
+            suffix[i]=sum;
+        }
+        if(prefix[prefix.length-3]==arr[arr.length-2])
+        {
+            System.out.println(max);
+            return;
+        }
+        for(int i=arr.length-2;i>=0;i--)
+        {
+            int ele=arr[i];
+            long beforesum=prefix[i-1];
+            int l=i+1;
+            int r=N-2;
+            long aftersum=suffix[l]-suffix[r+1];
+            if(beforesum+aftersum == max)
+            {
+                System.out.println(ele);
+                return;
+            }
+        }
+    }
+}
