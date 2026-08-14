@@ -1,0 +1,72 @@
+import java.util.*;
+class Solution {
+    public int[] countPairsOfConnectableServers(int[][] edges, int signalSpeed) {
+        Map<Integer,List<int[]>>adjList=new HashMap<>();
+        for(int edge[]:edges)
+        {
+            int u=edge[0];
+            int v=edge[1];
+            int wt=edge[2];
+            adjList.computeIfAbsent(u,k->new ArrayList<>()).add(new int[]{v,wt});
+            adjList.computeIfAbsent(v,k->new ArrayList<>()).add(new int[]{u,wt});
+        } 
+        int ans[]=new int[edges.length+1];
+        for(int i=0;i<=edges.length;i++)
+        {
+            ans[i]=bfs(signalSpeed,i,adjList);
+        }
+        return ans;
+    }
+    static int bfs(int sp,int node,Map<Integer,List<int[]>>adjList)
+    {
+        if(adjList.get(node).size()==1)
+        {
+            return 0;
+        }
+        Queue<int[]>queue=new LinkedList<>();
+        int dirarr[]=new int[adjList.get(node).size()];
+        queue.add(new int[]{node,0,-1});
+        Set<Integer>visited=new HashSet<>();
+        visited.add(node);
+        int ans=0;
+        int inidir=0;
+        while(!queue.isEmpty())
+        {
+            int arr[]=queue.poll();
+            int nd=arr[0];
+            int wt=arr[1];
+            int dir=arr[2];
+            // System.out.println(nd+" "+wt);
+            if(wt!=0 && wt%sp ==0)
+            {
+                dirarr[dir]++;
+            }
+            for(int adj[]:adjList.get(nd))
+            {
+                int currnode=adj[0];
+                int currwt=adj[1];
+                if(!visited.contains(currnode))
+                {
+                   visited.add(currnode);
+                   if(dir==-1)
+                   {
+                     queue.add(new int[]{currnode,wt+currwt,inidir});
+                     inidir++;
+                   }
+                   else{
+                    queue.add(new int[]{currnode,wt+currwt,dir});
+                   }
+                }
+            }
+        }
+        int count=0;
+        for(int i=0;i<adjList.get(node).size();i++)
+        {
+            // System.out.print(dirarr[i]+" ");
+            ans+=dirarr[i]*count;
+            count+=dirarr[i];
+        }
+        // System.out.println();
+        return ans;
+    }
+}
