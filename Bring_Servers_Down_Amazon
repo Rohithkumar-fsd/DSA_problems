@@ -1,0 +1,55 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        int req[]=new int[N];
+        int totalsum=0;
+        for(int i=0;i<N;i++)
+        {
+            req[i]=scan.nextInt();
+            totalsum+=req[i];
+        }
+        int health[]=new int[N];
+        for(int i=0;i<N;i++)
+        {
+            health[i]=scan.nextInt();
+        }
+        int k=scan.nextInt();
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+            (a, b) -> {
+                long lhs = (long) a[0] * b[1];
+                long rhs = (long) b[0] * a[1];
+                return Long.compare(rhs, lhs);
+            }
+        );
+        for(int i=0;i<N;i++)
+        {
+            pq.add(new int[]{req[i],health[i]});
+
+        }
+        int ans1=find(pq,k,totalsum);
+
+        System.out.println(ans1+1);
+    }
+    static int find(PriorityQueue<int[]>pq,int k,int totalsum)
+    {
+        int ans=0;
+        while(!pq.isEmpty())
+        {
+            int arr[]=pq.poll();
+            int req=arr[0];
+            int health=arr[1];
+            if(health%k==0)
+            {
+                health/=k;
+            }
+            else{
+                health=health/k +1;
+            }
+            ans+=(totalsum*health);
+            totalsum-=req;
+        }
+        return ans;
+    }
+}
