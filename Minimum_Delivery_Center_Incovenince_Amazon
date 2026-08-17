@@ -1,0 +1,100 @@
+// "static void main" must be defined in a public class.
+public class Main {
+    static int rowdiff[]={-1,0,1,0,1,-1,1,-1};
+    static int coldiff[]={0,1,0,-1,1,-1,-1,1};
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int R=scan.nextInt();
+        int C=scan.nextInt();
+        int mat[][]=new int[R][C];
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                mat[i][j]=scan.nextInt();
+            }
+        }
+        Queue<int[]>queue=new LinkedList<>();
+        boolean [][]visited=new boolean[R][C];
+        boolean found=false;
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                if(mat[i][j]==1)
+                {
+                    mat[i][j]=0;
+                    found=true;
+                    queue.add(new int[]{i,j,0});
+                    visited[i][j]=true;
+                }
+            }
+        }
+        if(!found)
+        {
+            System.out.println(Math.max(R/2,C/2));
+            return;
+        }
+        int maxdis=Integer.MIN_VALUE;
+        List<int[]>far=new ArrayList<>();
+        while(!queue.isEmpty())
+        {
+            int arr[]=queue.poll();
+            int rind=arr[0];
+            int cind=arr[1];
+            int dis=arr[2];
+            maxdis=Math.max(maxdis,dis);
+            for(int k=0;k<8;k++)
+            {
+                int adjR=rowdiff[k]+rind;
+                int adjC=coldiff[k]+cind;
+                if(adjR>=0 && adjC<C && adjC>=0 && adjR<R && !visited[adjR][adjC])
+                {
+                    visited[adjR][adjC]=true;
+                    queue.add(new int[]{adjR,adjC,dis+1});
+                    mat[adjR][adjC]=dis+1;
+                }
+            }
+        }
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                if(mat[i][j]==maxdis)
+                {
+                    far.add(new int[]{i,j});
+                }
+            }
+        }
+        // System.out.println(far);
+        int ans[]=new int[2];
+        int min=Integer.MAX_VALUE;
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                int max=Integer.MIN_VALUE;
+                if(mat[i][j]!=maxdis && mat[i][j]!=0)
+                {
+                    for(int pair[]:far)
+                    {
+                        int newR=pair[0];
+                        int newC=pair[1];
+                        max=Math.max(max,Math.max(
+                            Math.abs(newR - i),
+                            Math.abs(newC - j)));
+                    }
+                    // System.out.println(max);
+                    if(max<min)
+                    {
+                        min=max;
+                        ans[0]=i;
+                        ans[1]=j;
+                    }
+                }
+                
+            }
+        }
+        System.out.println(min==Integer.MAX_VALUE?0:min);
+    }
+}
