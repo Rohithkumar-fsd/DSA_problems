@@ -1,0 +1,74 @@
+import java.util.Scanner;
+public class ListRemovals {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        int arr[]=new int[N];
+        int queries[]=new int[N];
+        int segment[]=new int[4*N];
+        for(int i=0;i<N;i++)
+        {
+            arr[i]=scan.nextInt();
+        }
+        for(int i=0;i<N;i++)
+        {
+            queries[i]=scan.nextInt();
+        }
+        StringBuilder res=new StringBuilder();
+        build(segment,0,0,N-1);
+        for(int i=0;i<queries.length;i++)
+        {
+            int pos = queries[i];
+            int index = query(segment, 0, 0, N - 1, pos, arr);
+            res.append(arr[index]+" ");
+            update(segment, 0, 0, N - 1, index);
+        }
+        System.out.println(res.toString());
+    }
+    static void build(int segment[],int index,int low,int high)
+    {
+        if(low==high)
+        {
+            segment[index]=1;
+            return;
+        }
+        int mid=(low+high)/2;
+        build(segment,2*index+1,low,mid);
+        build(segment,2*index+2,mid+1,high);
+        segment[index]=segment[2*index+1]+segment[2*index+2];
+    }
+    static void update(int segment[],int index,int low,int high,int pos)
+    {
+        if(low==high)
+        {
+            segment[index]=0;
+            return;
+        }
+        int mid=(low+high)/2;
+        if(pos<=mid)
+        {
+            update(segment,2*index+1,low,mid,pos);
+        }
+        else{
+            update(segment,2*index+2,mid+1,high,pos);
+        }
+        segment[index]=segment[2*index+1]+segment[2*index+2];
+    }
+    static int query(int segment[],int index,int low,int high,int K,int arr[])
+    {
+        if(low==high)
+        {
+            return low;
+        }
+        int mid=(high+low)/2;
+        int leftcount=segment[2*index+1];
+        if(K<=leftcount)
+        {
+            return query(segment,2*index+1,low,mid,K,arr);
+        }
+        else{
+            K-=leftcount;
+            return query(segment,2*index+2,mid+1,high,K,arr);
+        }
+    }
+}
