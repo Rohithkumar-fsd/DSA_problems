@@ -1,0 +1,23 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner (System.in);
+        int N=scan.nextInt();
+        long ans=1;
+        long mod=1000000009;
+        int arr[]=new int[N];
+        Map<Integer,Integer>fre=new HashMap<>();
+        for(int i=0;i<N;i++)
+        {
+            arr[i]=scan.nextInt();
+            fre.put(arr[i],fre.getOrDefault(arr[i],0)+1);
+        }
+        for(int key:fre.keySet())
+        {
+            ans=(ans%mod);
+            ans=(ans*(fre.get(key)+1))%mod;
+            ans=(ans%mod);
+        }
+        System.out.println(ans-1);
+    }
+}
