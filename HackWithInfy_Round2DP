@@ -1,0 +1,101 @@
+import java.util.*;
+public class Main {
+    static int rowdiff[]={1,0};
+    static int coldiff[]={0,1};
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int R=scan.nextInt();
+        int C=scan.nextInt();
+        int grid1[][]=new int[R][C];
+        int grid2[][]=new int[R][C];
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                grid1[i][j]=scan.nextInt();
+            }
+        }
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                grid2[i][j]=scan.nextInt();
+            }
+        }
+        int s=scan.nextInt();
+        long maxdis[][][]=new long[R][C][3];
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                Arrays.fill(maxdis[i][j],Long.MIN_VALUE);
+            }
+        }
+        maxdis[0][0][1]=grid1[0][0];
+        maxdis[0][0][2]=grid2[0][0];
+        PriorityQueue<long[]>queue=new PriorityQueue<>(
+            (a,b)->Long.compare(a[2],b[2])
+        );
+        queue.add(new long[]{0,0,grid1[0][0],1});
+        queue.add(new long[]{0,0,grid2[0][0],2});
+        while(!queue.isEmpty())
+        {
+            long a[]=queue.poll();
+            int rind=(int)a[0];
+            int cind=(int)a[1];
+            long value=a[2];
+            long flag=a[3];
+            if (value < maxdis[rind][cind][(int)flag]) {
+                continue;
+            }
+            
+            if(flag==1)
+            {
+                for(int k=0;k<2;k++)
+                {
+                    int adjR=rowdiff[k]+rind;
+                    int adjC=coldiff[k]+cind;
+                    if(adjR>=0 && adjR<R && adjC>=0 && adjC<C && value+grid1[adjR][adjC]>maxdis[adjR][adjC][1])
+                    {
+                        maxdis[adjR][adjC][1]=value+grid1[adjR][adjC];
+                        queue.add(new long[]{adjR,adjC,maxdis[adjR][adjC][1],1});
+                    }
+                }
+                for(int k=0;k<2;k++)
+                {
+                    int adjR=rowdiff[k]+rind;
+                    int adjC=coldiff[k]+cind;
+                    if(adjR>=0 && adjR<R && adjC>=0 && adjC<C && value+grid2[adjR][adjC]-s >maxdis[adjR][adjC][2])
+                    {
+                        maxdis[adjR][adjC][2]=value+grid2[adjR][adjC]-s;
+                        queue.add(new long[]{adjR,adjC,maxdis[adjR][adjC][2],2});
+                    }
+                }
+            }
+            else{
+                for(int k=0;k<2;k++)
+                {
+                    int adjR=rowdiff[k]+rind;
+                    int adjC=coldiff[k]+cind;
+                    if(adjR>=0 && adjR<R && adjC>=0 && adjC<C && value+grid2[adjR][adjC]>maxdis[adjR][adjC][2])
+                    {
+                        maxdis[adjR][adjC][2]=value+grid2[adjR][adjC];
+                        queue.add(new long[]{adjR,adjC,maxdis[adjR][adjC][2],2});
+                    }
+                }
+                for(int k=0;k<2;k++)
+                {
+                    int adjR=rowdiff[k]+rind;
+                    int adjC=coldiff[k]+cind;
+                    if(adjR>=0 && adjR<R && adjC>=0 && adjC<C && value+grid1[adjR][adjC]-s>maxdis[adjR][adjC][1])
+                    {
+                        maxdis[adjR][adjC][1]=value+grid1[adjR][adjC]-s;
+                        queue.add(new long[]{adjR,adjC,maxdis[adjR][adjC][1],1});
+                    }
+                }
+            }
+            
+        }
+        System.out.println(Math.max(maxdis[R-1][C-1][1],maxdis[R-1][C-1][2]));
+    }
+}
