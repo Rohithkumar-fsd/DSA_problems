@@ -1,0 +1,59 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int R=scan.nextInt();
+        int C=scan.nextInt();
+        int grid[][]=new int[R][C];
+        for(int i=0;i<R;i++)
+        {
+            for(int j=0;j<C;j++)
+            {
+                grid[i][j]=scan.nextInt();
+            }
+        }
+        long maxdis[][]=new long[R][C];
+        for(int i=0;i<R;i++)
+        {
+            Arrays.fill(maxdis[i],Long.MIN_VALUE);
+        }
+        maxdis[0][0]=grid[0][0];
+        PriorityQueue<long[]>queue=new PriorityQueue<>(
+            (a,b)->Long.compare(a[3],b[3])
+        );
+        queue.add(new long[]{0,0,maxdis[0][0],2*maxdis[0][0]});
+        while(!queue.isEmpty())
+        {
+            long a[]=queue.poll();
+            int rind=(int)a[0];
+            int cind=(int)a[1];
+            long min=a[2];
+            long value=a[3];
+            int adjR=rind;
+            int adjC=cind+1;
+            
+            if(adjR>=0 && adjC<C && adjR<R && adjC>=0)
+            {
+                long minvalue=Math.min(min,grid[adjR][adjC]);
+                if(value+ 2*minvalue > maxdis[adjR][adjC])
+                {
+                    maxdis[adjR][adjC]=value + 2*minvalue;
+                   queue.add(new long[]{adjR,adjC,minvalue,maxdis[adjR][adjC]});
+                }
+            }
+            adjR=rind+1;
+            adjC=cind;
+            if(adjR>=0 && adjC<C && adjR<R && adjC>=0)
+            {
+                long minvalue=Math.min(min,grid[adjR][adjC]);
+                if(value+2*minvalue > maxdis[adjR][adjC])
+                {
+                    maxdis[adjR][adjC]=value + 2*minvalue;
+                   queue.add(new long[]{adjR,adjC,minvalue,maxdis[adjR][adjC]});
+                }
+            }
+            
+        }
+        System.out.println(maxdis[R-1][C-1]);
+    }
+}
