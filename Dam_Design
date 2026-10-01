@@ -1,0 +1,45 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        int wallpos[]=new int[N];
+        int wallht[]=new int[N];
+        for(int i=0;i<N;i++)
+        {
+            wallpos[i]=scan.nextInt();
+        }
+        for(int i=0;i<N;i++)
+        {
+            wallht[i]=scan.nextInt();
+        }
+        int ans=0;
+        for(int i=0;i<N-1;i++)
+        {
+            int l=wallpos[i];
+            int r=wallpos[i+1];
+            int gap=Math.abs(r-l)-1;
+            int diff=Math.abs(wallht[i+1]-wallht[i]);
+            if(gap==0)
+            {
+                continue;
+            }
+            int  copy=gap;
+            gap-=diff;
+            
+            if(gap<0)
+            {
+                ans=Math.max(ans,Math.min(wallht[i],wallht[i+1])+copy);
+                continue;
+            }
+            if(gap%2==0)
+            {
+                ans=Math.max(ans,Math.min(wallht[i],wallht[i+1])+(gap/2)+diff);
+            }
+            else{
+                ans=Math.max(ans,Math.min(wallht[i],wallht[i+1])+(gap/2)+1+diff);
+            }
+        }
+        System.out.println(ans);
+    }
+}
