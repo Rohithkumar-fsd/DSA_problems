@@ -1,0 +1,69 @@
+import java.util.*;
+public class Main {
+    static int rowdiff[]={2,2,1,1,-2,-2,-1,-1};
+    static int coldiff[]={1,-1,2,-2,1,-1,2,-2};
+    public static void main(String[] args) {
+       Scanner scan=new Scanner(System.in);
+        int y=scan.nextInt();
+        int x=scan.nextInt();
+        int mat[][]=new int[9][9];
+        backtrack(x,y,1,mat);
+        for(int i=1;i<9;i++)
+        {
+            for(int j=1;j<9;j++)
+            {
+                System.out.print(mat[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+    static boolean backtrack(int r,int c,int count,int mat[][])
+    {
+        mat[r][c]=count;
+        if(count==64)
+        {
+            return true;
+        }
+        List<Integer>moves=new ArrayList<>();
+        for(int k=0;k<8;k++)
+        {
+            int adjR=rowdiff[k]+r;
+            int adjC=coldiff[k]+c;
+            if(adjR>=1 && adjC>=1 && adjR<9 && adjC<9 && mat[adjR][adjC]==0)
+            {
+                moves.add(k);
+            }
+        }
+        moves.sort((i1,i2)->(
+            Integer.compare(
+                getDegree(r+rowdiff[i1],c+coldiff[i1],mat),
+                getDegree(r+rowdiff[i2],c+coldiff[i2],mat)
+            )
+        ));
+        for(int i:moves)
+        {
+            int adjR=rowdiff[i]+r;
+            int adjC=coldiff[i]+c;
+            if(backtrack(adjR,adjC,count+1,mat))
+            {
+                return true;
+            }
+        }
+        mat[r][c]=0;
+        return false;
+    }
+    static int getDegree(int r,int c,int mat[][])
+    {
+        int count=0;
+        for(int k=0;k<8;k++)
+        {
+            int adjR=rowdiff[k]+r;
+            int adjC=coldiff[k]+c;
+            if(adjR>=1 && adjC>=1 && adjR<9 && adjC<9 && mat[adjR][adjC]==0)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+}
