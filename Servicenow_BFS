@@ -1,0 +1,34 @@
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        Map<Integer,TreeSet<Integer>>adjList=new HashMap<>();
+        for(int i=0;i<N;i++)
+        {
+            int u=scan.nextInt();
+            int v=scan.nextInt();
+            adjList.computeIfAbsent(u,k->new TreeSet<>()).add(v);
+            adjList.computeIfAbsent(v,k->new TreeSet<>()).add(u);
+        }
+        Queue<int[]>queue=new LinkedList<>();
+        int source=scan.nextInt();
+        queue.add(new int[]{source,0});
+        Set<Integer>vis=new HashSet<>();
+        vis.add(source);
+        while(!queue.isEmpty())
+        {
+            int arr[]=queue.poll();
+            int node=arr[0];
+            int dis=arr[1];
+            System.out.print(node+" ");
+            for(int adj:adjList.get(node))
+            {
+                if(!vis.contains(adj))
+                {
+                    vis.add(adj);
+                    queue.add(new int[]{adj,dis+1});
+                }
+            }
+        }
+    }
+}
