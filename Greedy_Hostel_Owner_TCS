@@ -1,0 +1,57 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int N=scan.nextInt();
+        String arr[]=new String[N];
+        List<Character>alist=List.of('F','G','H','I','J');
+        scan.nextLine();
+        for(int i=0;i<N;i++)
+        {
+            arr[i]=scan.nextLine();
+        }
+        int cu=scan.nextInt();
+        int sum=0;
+        for(String s:arr)
+        {
+            StringBuilder num=new StringBuilder();
+            for(int i=0;i<s.length();i++)
+            {
+                char ch=s.charAt(i);
+                if(alist.contains(ch))
+                {
+                    if(i+1 < s.length())
+                    {
+                        int nxt=9-(ch-'A');
+                        char next=(char)(nxt+'A');
+                        if(s.charAt(i+1)==next)
+                        {
+                            num.append("0");
+                        }
+                        else{
+                            num.append(ch-'A');
+                        }
+                    }
+                    else{
+                        num.append(ch-'A');
+                    }
+                }
+                else{
+                    num.append(ch-'A');
+                }
+                // System.out.println(num.toString());
+            }
+            // System.out.println(num.toString());
+            sum+=Integer.parseInt(num.toString());
+        }
+        System.out.println(sum+" "+cu);
+        if(sum>cu)
+        {
+            System.out.println("GREEDY");
+            System.out.println(sum-cu);
+        }
+        else{
+            System.out.println("INNOCENT");
+        }
+    }
+}
