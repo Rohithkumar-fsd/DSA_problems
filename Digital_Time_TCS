@@ -1,0 +1,58 @@
+import java.util.*;
+import java.time.*;
+import java.time.format.*;
+import java.time.temporal.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        int arr[]=new int[12];
+        int fre[]=new int[10];
+        for(int i=0;i<9;i++)
+        {
+            arr[i]=scan.nextInt();
+            fre[arr[i]]++;
+        }
+        LocalTime curr=LocalTime.of(23,59,59);
+        
+        DateTimeFormatter fmt=DateTimeFormatter.ofPattern("HHmmss");
+        String ans="";
+        
+        while(true)
+        {
+            String s=curr.format(fmt);
+            
+            if(form(s,fre,arr))
+            {
+                ans=s;
+                break;
+            }
+            if(curr.equals(LocalTime.MIDNIGHT))
+            {
+                break;
+            }
+            curr=curr.minusSeconds(1);
+        }
+        if(ans.isEmpty())
+        {
+            System.out.println("Impossible");
+            return;
+        }
+        System.out.println(ans.substring(0,2)+":"+ans.substring(2,4)+" "+ans.substring(4,6));
+    }
+    static boolean form(String s,int fre[],int arr[])
+    {
+        int copy[]=fre.clone();
+        for(char ch:s.toCharArray())
+        {
+            int no=ch-'0';
+            if(copy[no]>0)
+            {
+                copy[no]--;
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
+    }
+}
