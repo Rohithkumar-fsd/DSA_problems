@@ -1,0 +1,59 @@
+import java.util.*;
+public class Main {
+    static int ans=0;
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        String s=scan.nextLine();
+        int x=scan.nextInt();
+        int y=scan.nextInt();
+        ans=0;
+        // stack=new StringBuilder(s);
+        if(x>y)
+        {
+            s=ab(s,x);
+            ba(s,y);
+            System.out.println(ans);
+        }
+        else{
+            s=ba(s,y);
+            ab(s,x);
+            System.out.println(ans);
+        }
+        // System.out.println(s);
+    }
+    static String ba(String s,int y)
+    {
+        int count=0;
+        StringBuilder stack=new StringBuilder();
+        for(char ch:s.toCharArray())
+        {
+            if(stack.length()>0  && ch=='a' && stack.charAt(stack.length()-1)=='b' )
+            {
+                 count++;
+                 stack.deleteCharAt(stack.length()-1);
+            }
+            else{
+                stack.append(ch);
+            }
+        }
+        ans+=count*y;
+        return stack.toString();
+    }
+    static String ab(String s,int x){
+        int count=0;
+        StringBuilder stack=new StringBuilder();
+        for(char ch:s.toCharArray())
+        {
+            if(stack.length()>0  && ch=='b' && stack.charAt(stack.length()-1)=='a')
+            {
+                count++;
+                stack.deleteCharAt(stack.length()-1);
+            }
+            else{
+                stack.append(ch);
+            }
+        }
+        ans+=count*x;
+        return stack.toString();
+    }
+}
