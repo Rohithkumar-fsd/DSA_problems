@@ -1,0 +1,111 @@
+import java.util.*;
+public class Main{
+ static class State{
+     int node;
+     int res;
+     int vol;
+     int currlimit;
+     String sstate;
+     State(int node,int res,int currlimit,String sstate,int vol)
+     {
+         this.node=node;
+         this.res=res;
+         this.currlimit=currlimit;
+         this.sstate=sstate;
+         this.vol=vol;
+     }
+ }
+ public static void main(String[]args)
+ {
+   Scanner scan=new Scanner(System.in);
+   int N=scan.nextInt();
+   int M=scan.nextInt();
+     int S=scan.nextInt();
+     int D=scan.nextInt();
+     int maxvoltage=scan.nextInt();
+     int reqcurrent=scan.nextInt();
+     scan.nextLine();
+     Map<Integer,List<State>>adjList=new HashMap<>();
+     for(int i=0;i<M;i++)
+     {
+         String in=scan.nextLine();
+         String split[]=in.split("\\s+");
+         int  u=Integer.parseInt(split[0]);
+         int v=Integer.parseInt(split[1]);
+         int res=Integer.parseInt(split[2]);
+         int vol=Integer.parseInt(split[3]);
+         int currlimit=Integer.parseInt(split[4]);
+         String sstate=split[5];
+         adjList.computeIfAbsent(u,k->new ArrayList<>()).add(new State(v,res,currlimit,sstate,vol));
+         adjList.computeIfAbsent(v, k -> new ArrayList<>()).add(new State(u, res, currlimit, sstate, vol));
+     }
+     int dp[][]=new int[N+1][maxvoltage+1];
+     for(int i=1;i<=N;i++)
+     {
+         Arrays.fill(dp[i],Integer.MAX_VALUE);
+     }
+     PriorityQueue<int[]>pq=new PriorityQueue<>(
+         (a,b)->a[1]-b[1]
+     );
+     pq.add(new int[]{S,0,0});
+     dp[S][0]=0;
+     while(!pq.isEmpty())
+     {
+         int arr[]=pq.poll();
+         int node=arr[0];
+         int res=arr[1];
+         int vol=arr[2];
+         if(dp[node][vol] <res)
+         {
+             continue;
+         }
+         // System.out.println(node+" "+res);
+         if(!adjList.containsKey(node))
+         {
+             continue;
+         }
+         // System.out.println("Came here");
+         for(State s:adjList.get(node))
+         {
+             int currnode=s.node;
+             int currvoltage=s.vol;
+             int currres=s.res;
+             int climit=s.currlimit;
+             String sstate=s.sstate;
+             if(sstate.equals("ON"))
+             {
+                 if(climit>=reqcurrent)
+                 {
+                      if(vol+currvoltage <=maxvoltage)
+                      {
+                          if(dp[currnode][vol+currvoltage]>currres+res)
+                          {
+                              dp[currnode][vol+currvoltage]=currres+res;
+                              pq.add(new int[]{currnode,currres+res,vol+currvoltage});
+                          }
+                      }
+                 }
+             }
+         }
+     }
+     int minres=Integer.MAX_VALUE;
+     for(int i=0;i<=maxvoltage;i++)
+     {
+         minres=Math.min(dp[D][i],minres);
+     }
+     if(minres==Integer.MAX_VALUE)
+     {
+         System.out.println("-1");
+         return;
+     }
+     int ans=Integer.MAX_VALUE;
+     for(int i=1;i<=maxvoltage;i++)
+     {
+         if(dp[D][i]==minres)
+         {
+             ans=Math.min(i*reqcurrent,ans);
+         }
+     }
+     System.out.println(ans);
+ }
+}
